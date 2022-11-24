@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Dto\CreateFileInfoDto;
+use App\Enums\FileInfoType;
 use App\Models\FileInfo;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -10,9 +11,13 @@ class FileInfosService
 {
     public function create(CreateFileInfoDto $dto): FileInfo
     {
+        if ($parentId = $dto->getParentId()) {
+            FileInfo::where('type', FileInfoType::Folder->value)->findOrFail($parentId);
+        }
+
         $fileInfo = new FileInfo();
         $fileInfo->user_id = $dto->getUserId();
-        $fileInfo->file_info_id = $dto->getParentId();
+        $fileInfo->file_info_id = $parentId;
         $fileInfo->type = $dto->getType()->value;
         $fileInfo->path = $dto->getPath();
         $fileInfo->name = $dto->getName();
