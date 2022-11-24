@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\FileInfosController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,6 +27,8 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::group(['prefix' => 'files', 'middleware' => 'auth'], function () {
     Route::group(['prefix' => 'create'], function () {
-       Route::post('folder', [\App\Http\Controllers\FileInfosController::class, 'createFolder']);
+       Route::post('folder', [FileInfosController::class, 'createFolder']);
     });
+    Route::get('/', [FileInfosController::class, 'index']);
+    Route::patch('{id}/rename', [FileInfosController::class, 'rename']);
 });

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Dto\CreateFileInfoDto;
 use App\Enums\FileInfoType;
 use App\Http\Requests\CreateFolderRequest;
+use App\Http\Requests\GetFilesRequest;
+use App\Http\Requests\RenameFileRequest;
 use App\Models\FileInfo;
 use App\Services\FileInfosService;
 use Illuminate\Http\Request;
@@ -17,9 +19,9 @@ class FileInfosController extends Controller
     {
     }
 
-    public function index()
+    public function index(GetFilesRequest $request)
     {
-
+        return $this->service->getList(auth()->id(), $request->input('folder_id'));
     }
 
     public function uploadFile()
@@ -41,11 +43,12 @@ class FileInfosController extends Controller
     {
     }
 
-    public function update(Request $request, FileInfo $fileInfo)
+    public function rename(RenameFileRequest $request, string $id)
     {
+        return $this->service->rename($id, $request->input('name'));
     }
 
-    public function destroy(FileInfo $fileInfo)
+    public function destroy(string $id)
     {
     }
 }

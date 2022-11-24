@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Dto\CreateFileInfoDto;
 use App\Models\FileInfo;
+use Illuminate\Database\Eloquent\Collection;
 
 class FileInfosService
 {
@@ -15,6 +16,25 @@ class FileInfosService
         $fileInfo->type = $dto->getType()->value;
         $fileInfo->path = $dto->getPath();
         $fileInfo->name = $dto->getName();
+        $fileInfo->save();
+
+        return $fileInfo;
+    }
+
+    public function getList(string $userId, ?string $folderId): Collection
+    {
+        if ($folderId) {
+            $folder = FileInfo::where('user_id', $userId)->findOrFail($folderId);
+            return $folder->children()->get();
+        } else {
+            return FileInfo::where('user_id', $userId)->whereNull('file_info_id')->get();
+        }
+    }
+
+    public function rename(string $id, string $name): FileInfo
+    {
+        $fileInfo = FileInfo::findOrFail($id);
+        $fileInfo->name = $name;
         $fileInfo->save();
 
         return $fileInfo;
