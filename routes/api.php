@@ -24,3 +24,9 @@ Route::group(['prefix' => 'auth'], function () {
         Route::post('me', [AuthController::class, 'me']);
     });
 });
+
+Route::group(['prefix' => 'files', 'middleware' => 'auth'], function () {
+    Route::group(['prefix' => 'create'], function () {
+       Route::post('folder', [\App\Http\Controllers\FileInfosController::class, 'createFolder']);
+    });
+});
