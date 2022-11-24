@@ -3,7 +3,6 @@
 namespace App\Dto;
 
 use App\Enums\FileInfoType;
-use Ramsey\Uuid\UuidInterface;
 
 class CreateFileInfoDto extends Dto
 {
@@ -13,8 +12,17 @@ class CreateFileInfoDto extends Dto
         private readonly FileInfoType $type,
         private readonly string $name,
         private readonly ?string $path = null,
+        private readonly ?string $fileType = null,
     )
     {
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFileType(): ?string
+    {
+        return $this->fileType;
     }
 
     /**
