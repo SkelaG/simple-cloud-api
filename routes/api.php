@@ -25,7 +25,7 @@ Route::group(['prefix' => 'auth'], function () {
     });
 });
 
-Route::group(['prefix' => 'files', 'middleware' => 'auth'], function () {
+Route::group(['prefix' => 'cloud', 'middleware' => 'auth'], function () {
     Route::group(['prefix' => 'create'], function () {
        Route::post('folder', [FileInfosController::class, 'createFolder']);
        Route::post('file', [FileInfosController::class, 'uploadFile']);
@@ -33,4 +33,5 @@ Route::group(['prefix' => 'files', 'middleware' => 'auth'], function () {
     Route::get('/', [FileInfosController::class, 'index']);
     Route::patch('{id}/rename', [FileInfosController::class, 'rename']);
     Route::delete('{id}/delete', [FileInfosController::class, 'destroy']);
+    Route::get('{id}/download', [FileInfosController::class, 'download']);
 });

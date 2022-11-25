@@ -8,7 +8,6 @@ use App\Http\Requests\CreateFileRequest;
 use App\Http\Requests\CreateFolderRequest;
 use App\Http\Requests\GetFilesRequest;
 use App\Http\Requests\RenameFileRequest;
-use App\Models\FileInfo;
 use App\Services\FileInfosService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -28,7 +27,9 @@ class FileInfosController extends Controller
     {
         $uploadedFile = $request->file('file');
 
-        if (!($fileName = $request->input('name'))) {
+        if ($fileName = $request->input('name')) {
+            $fileName .= '.' . $uploadedFile->getClientOriginalExtension();
+        } else {
             $fileName = $uploadedFile->getClientOriginalName();
         }
 
@@ -58,8 +59,10 @@ class FileInfosController extends Controller
         ));
     }
 
-    public function show(FileInfo $fileInfo)
+    public function download(string $id)
     {
+        $fileInfo = $this->service->getFileInfoForDownload($id, auth()->id());
+        return \Storage::download($fileInfo->path, $fileInfo->name);
     }
 
     public function rename(RenameFileRequest $request, string $id)

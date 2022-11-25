@@ -28,6 +28,12 @@ class FileInfosService
         return $fileInfo;
     }
 
+    public function getFileInfoForDownload(string $id, string $userId): FileInfo
+    {
+        return FileInfo::where('user_id', $userId)->where('type', FileInfoType::File->value)
+            ->findOrFail($id);
+    }
+
     public function getList(string $userId, ?string $folderId): Collection
     {
         if ($folderId) {
