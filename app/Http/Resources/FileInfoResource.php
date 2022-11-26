@@ -5,8 +5,8 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin \App\Models\User */
-class UserResource extends JsonResource
+/** @mixin \App\Models\FileInfo */
+class FileInfoResource extends JsonResource
 {
     /**
      * @param  Request  $request
@@ -16,9 +16,12 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'parent' => new FileInfoResource($this->whenLoaded('parent')),
+            'type' => $this->type,
             'name' => $this->name,
-            'email' => $this->email,
-            'rootDirectoryId' => $this->root_directory,
+            'created_at' => $this->created_at,
+
+            'children' => FileInfoResource::collection($this->whenLoaded('children')),
         ];
     }
 }

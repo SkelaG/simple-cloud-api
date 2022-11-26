@@ -10,7 +10,7 @@ class CreateFileRequest extends FormRequest
     {
         return [
             'file' => 'required|file',
-            'parent_id' => 'nullable|string',
+            'parent_id' => 'required|string',
             'name' => 'nullable|string',
         ];
     }

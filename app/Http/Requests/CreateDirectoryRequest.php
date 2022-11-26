@@ -4,12 +4,12 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateFolderRequest extends FormRequest
+class CreateDirectoryRequest extends FormRequest
 {
     public function rules(): array
     {
         return [
-            'parent_id' => 'nullable|string',
+            'parent_id' => 'required|string',
             'name' => 'required|string',
         ];
     }

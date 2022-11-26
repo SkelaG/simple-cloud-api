@@ -4,7 +4,7 @@ namespace App\Enums;
 
 enum FileInfoType: string
 {
-    case Folder = 'folder';
+    case Directory = 'directory';
     case File = 'file';
 
     /**

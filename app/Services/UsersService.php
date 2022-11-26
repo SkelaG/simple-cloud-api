@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Dto\CreateUserDto;
+use App\Events\UserCreatedEvent;
 use App\Models\User;
 use Hash;
 
@@ -15,6 +16,8 @@ class UsersService
         $user->email = $dto->getEmail();
         $user->password = Hash::make($dto->getPassword());
         $user->save();
+
+        event(new UserCreatedEvent($user->id));
 
         return $user;
     }

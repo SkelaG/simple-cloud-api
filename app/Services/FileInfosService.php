@@ -12,7 +12,7 @@ class FileInfosService
     public function create(CreateFileInfoDto $dto): FileInfo
     {
         if ($parentId = $dto->getParentId()) {
-            FileInfo::where('type', FileInfoType::Folder->value)->where('user_id', $dto->getUserId())
+            FileInfo::where('type', FileInfoType::Directory->value)->where('user_id', $dto->getUserId())
                 ->findOrFail($parentId);
         }
 
@@ -34,14 +34,10 @@ class FileInfosService
             ->findOrFail($id);
     }
 
-    public function getList(string $userId, ?string $folderId): Collection
+    public function getDirectory(string $userId, string $directoryId): FileInfo
     {
-        if ($folderId) {
-            $folder = FileInfo::where('user_id', $userId)->findOrFail($folderId);
-            return $folder->children()->get();
-        } else {
-            return FileInfo::where('user_id', $userId)->whereNull('file_info_id')->get();
-        }
+        return FileInfo::with(['children', 'parent'])->where('type', FileInfoType::Directory->value)
+            ->where('user_id', $userId)->findOrFail($directoryId);
     }
 
     public function rename(string $id, string $name, string $userId): FileInfo
@@ -59,13 +55,13 @@ class FileInfosService
         $this->choseDeleteMethod($fileInfo);
     }
 
-    private function deleteFolder(FileInfo $folder): void
+    private function deleteDirectory(FileInfo $directory): void
     {
-        foreach ($folder->children()->get() as $fileInfo) {
+        foreach ($directory->children()->get() as $fileInfo) {
             $this->choseDeleteMethod($fileInfo);
         }
 
-        $folder->delete();
+        $directory->delete();
     }
 
     private function deleteFile(FileInfo $file): void
@@ -81,8 +77,8 @@ class FileInfosService
     private function choseDeleteMethod(FileInfo $fileInfo): void
     {
         switch (FileInfoType::tryFrom($fileInfo->type)) {
-            case FileInfoType::Folder:
-                $this->deleteFolder($fileInfo);
+            case FileInfoType::Directory:
+                $this->deleteDirectory($fileInfo);
                 break;
             case FileInfoType::File:
                 $this->deleteFile($fileInfo);

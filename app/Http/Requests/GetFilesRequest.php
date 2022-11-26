@@ -9,7 +9,7 @@ class GetFilesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'folder_id' => 'nullable|string',
+            'directory_id' => 'required|string',
         ];
     }
 }

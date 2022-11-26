@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\Dto\CreateFileInfoDto;
 use App\Enums\FileInfoType;
 use App\Http\Requests\CreateFileRequest;
-use App\Http\Requests\CreateFolderRequest;
+use App\Http\Requests\CreateDirectoryRequest;
 use App\Http\Requests\GetFilesRequest;
 use App\Http\Requests\RenameFileRequest;
+use App\Http\Resources\FileInfoResource;
 use App\Services\FileInfosService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -20,7 +21,7 @@ class FileInfosController extends Controller
 
     public function index(GetFilesRequest $request)
     {
-        return $this->service->getList(auth()->id(), $request->input('folder_id'));
+        return new FileInfoResource($this->service->getDirectory(auth()->id(), $request->input('directory_id')));
     }
 
     public function uploadFile(CreateFileRequest $request)
@@ -35,28 +36,28 @@ class FileInfosController extends Controller
 
         $path = \Storage::putFile('files', $uploadedFile);
         try {
-            return $this->service->create(new CreateFileInfoDto(
+            return new FileInfoResource($this->service->create(new CreateFileInfoDto(
                 auth()->id(),
                 $request->input('parent_id'),
                 FileInfoType::File,
                 $fileName,
                 $path,
                 $uploadedFile->getClientOriginalExtension(),
-            ));
+            )));
         } catch (ModelNotFoundException $exception) {
             \Storage::delete($path);
             throw $exception;
         }
     }
 
-    public function createFolder(CreateFolderRequest $request)
+    public function createDirectory(CreateDirectoryRequest $request)
     {
-        return $this->service->create(new CreateFileInfoDto(
+        return new FileInfoResource($this->service->create(new CreateFileInfoDto(
             auth()->id(),
             $request->input('parent_id'),
-            FileInfoType::Folder,
+            FileInfoType::Directory,
             $request->input('name'),
-        ));
+        )));
     }
 
     public function download(string $id)
@@ -67,7 +68,7 @@ class FileInfosController extends Controller
 
     public function rename(RenameFileRequest $request, string $id)
     {
-        return $this->service->rename($id, $request->input('name'), auth()->id());
+        return new FileInfoResource($this->service->rename($id, $request->input('name'), auth()->id()));
     }
 
     public function destroy(string $id)

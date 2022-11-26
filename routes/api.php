@@ -27,7 +27,7 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::group(['prefix' => 'cloud', 'middleware' => 'auth'], function () {
     Route::group(['prefix' => 'create'], function () {
-       Route::post('folder', [FileInfosController::class, 'createFolder']);
+       Route::post('directory', [FileInfosController::class, 'createDirectory']);
        Route::post('file', [FileInfosController::class, 'uploadFile']);
     });
     Route::get('/', [FileInfosController::class, 'index']);
