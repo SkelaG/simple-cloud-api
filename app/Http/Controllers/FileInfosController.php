@@ -28,9 +28,7 @@ class FileInfosController extends Controller
     {
         $uploadedFile = $request->file('file');
 
-        if ($fileName = $request->input('name')) {
-            $fileName .= '.' . $uploadedFile->getClientOriginalExtension();
-        } else {
+        if (!($fileName = $request->input('name'))) {
             $fileName = $uploadedFile->getClientOriginalName();
         }
 
