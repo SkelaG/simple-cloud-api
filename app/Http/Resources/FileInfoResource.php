@@ -18,6 +18,7 @@ class FileInfoResource extends JsonResource
             'id' => $this->id,
             'parent' => new FileInfoResource($this->whenLoaded('parent')),
             'type' => $this->type,
+            'file_type' => $this->file_type,
             'name' => $this->name,
             'created_at' => $this->created_at,
 
